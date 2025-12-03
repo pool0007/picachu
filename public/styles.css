@@ -140,10 +140,8 @@ main {
 .cat-container {
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  /* Aquí definimos que ocupe el 60% de la altura de la pantalla */
+  left: 0;           /* CAMBIO: Empieza desde la izquierda */
+  width: 100%;       /* Ocupa todo el ancho */
   height: 60vh;
   display: flex;
   justify-content: center;
@@ -151,14 +149,15 @@ main {
   z-index: 5;
   pointer-events: all;
   margin: 0;
-  padding-bottom: 50px; /* Espacio para no chocar con la barra inferior */
+  padding-bottom: 50px;
   
-  /* Animación de click rápida */
+  /* Eliminamos el 'transform: translateX' de aquí porque ya ocupa el 100% */
+  transform-origin: bottom center; /* Para que el zoom sea desde abajo */
   transition: transform 0.05s;
 }
 
 .cat-container:active {
-  transform: translateX(-50%) scale(0.98);
+ transform: scale(0.98); 
 }
 
 .cat-images {
