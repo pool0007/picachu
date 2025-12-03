@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pop-Dak</title>
+  
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#6366f1">
+  <link rel="shortcut icon" href="favicon/favicon.ico">
+  <meta name="msapplication-TileColor" content="#6366f1">
+  <meta name="msapplication-config" content="favicon/browserconfig.xml">
+  <meta name="theme-color" content="#6366f1">
+
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="https://i.ibb.co/4RVd9pdq/POPDARK.png" alt="PopCat" class="logo" onerror="this.style.display='none'">
+      <button class="about-btn" id="aboutBtn">About Popdak</button>
+    </header>
+
+    <main>
+      <div class="floating-counter" id="floatingCounter">0</div>
+
+      <div class="cat-container" id="catContainer">
+        <div class="cat-images">
+          <img src="https://i.ibb.co/4RPX8sxh/pop01.png" class="cat-img cat-closed" alt="Cat Closed" />
+          <img src="https://i.ibb.co/JMNwM20/pop02.png" class="cat-img cat-open" alt="Cat Open" />
+        </div>
+        <div class="click-effect">+1</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- About Modal -->
+  <div class="modal-overlay" id="aboutModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>About Popdak</h2>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>After a long day of Rug pulls come Pop-Dak thang!! It's a great stress relief from the Rug pulls in the market!</p>
+        <p>The Most useless coin on Monad is here Pop-Dak made by us for us with the #1 Meme Mascot, Molandak on Monad let's see how many times you can POP-Dak thang!!</p>
+        <p><strong>Disclaimer:</strong> this token was made for the vibes, invest at your own risk</p>
+        <div class="modal-features">
+          <div class="feature-item">
+            <span class="feature-icon">💎</span>
+            <span>Created by WeDev Team</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">💰</span>
+            <span>0/0 Tax</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🛡️</span>
+            <span>No Rug zone</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">👥</span>
+            <span>100% Community owned</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-minimized" id="dashboardMinimized">
+    <div class="dashboard-header" id="dashboardToggle">
+      <div class="toggle-arrow">▲</div>
+      <div class="dashboard-content">
+        <div class="leaderboard-mini">
+          <div class="top-country">
+            <span class="trophy">🏆</span>
+            <span class="rank-number">1</span>
+            <img id="topCountryFlag" src="https://flagcdn.com/16x12/un.png" alt="Top Country" class="country-flag-mini">
+            <span class="country-name" id="topCountryName">-</span>
+            <span class="clicks-count" id="topCountryClicks">0</span>
+          </div>
+        </div>
+        
+        <div class="my-country-stats">
+          <div class="my-mini-stats">
+            <img id="myMiniFlag" src="https://flagcdn.com/16x12/un.png" alt="My Country" class="country-flag-mini">
+            <span class="my-clicks-count" id="myMiniClicks">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-expanded" id="dashboardExpanded" style="display: none;">
+    <div class="dashboard-header" id="dashboardClose">
+      <div class="toggle-arrow">▼</div>
+      <h2>📊 Global Leaderboard</h2>
+    </div>
+    
+    <div class="leaderboard-full">
+      <div class="leaderboard-header-full">
+        <span class="rank-header">#</span>
+        <span class="country-header">Country</span>
+        <span class="clicks-header">Clicks</span>
+      </div>
+      <div id="leaderboardBody" class="leaderboard-body-full"></div>
+    </div>
+  </div>
+
+  <script src="country-codes.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // Código para manejar el modal About
+    document.addEventListener('DOMContentLoaded', function() {
+      const aboutBtn = document.getElementById('aboutBtn');
+      const aboutModal = document.getElementById('aboutModal');
+      const modalClose = document.getElementById('modalClose');
+      
+      // Mostrar modal al hacer clic en About
+      aboutBtn.addEventListener('click', function() {
+        aboutModal.style.display = 'flex';
+      });
+      
+      // Ocultar modal al hacer clic en la X
+      modalClose.addEventListener('click', function() {
+        aboutModal.style.display = 'none';
+      });
+      
+      // Ocultar modal al hacer clic fuera del contenido
+      aboutModal.addEventListener('click', function(e) {
+        if (e.target === aboutModal) {
+          aboutModal.style.display = 'none';
+        }
+      });
+      
+      // Cerrar modal con tecla ESC
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && aboutModal.style.display === 'flex') {
+          aboutModal.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
