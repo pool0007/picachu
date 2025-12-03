@@ -11,11 +11,9 @@
   --pk-red-dark: #8b0000;
   --pk-blue: #3b4cca;        /* Azul Pokémon */
   --pk-yellow: #ffde00;      /* Amarillo Pikachu */
-  --pk-gold: #b08d00;
   --pk-white: #f8f8f8;
   --pk-black: #212121;
   --pk-screen: #98c9a3;      /* Verde Gameboy */
-  --pk-dialog: #ffffff;
   --pk-border: 4px solid #212121;
   --pk-border-thin: 2px solid #212121;
   --pk-shadow: 4px 4px 0px rgba(0,0,0,0.5);
@@ -24,8 +22,8 @@
 
 body {
   font-family: 'Press Start 2P', cursive; /* Fuente Pixel Art */
-  /* Fondo estilo mapa de ruta */
   background-color: #71c080;
+  /* Patrón de mapa clásico */
   background-image: 
     linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
@@ -33,7 +31,7 @@ body {
   min-height: 100vh;
   color: var(--text-dark);
   overflow: hidden;
-  image-rendering: pixelated; /* Fuerza pixelado en imágenes */
+  image-rendering: pixelated; 
 }
 
 /* --- LAYOUT --- */
@@ -61,7 +59,6 @@ header {
   height: auto;
   margin: 0 auto;
   display: block;
-  /* Borde blanco para resaltar sobre el fondo */
   filter: drop-shadow(4px 4px 0 #000); 
 }
 
@@ -88,7 +85,7 @@ header {
   box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
 }
 
-/* --- MAIN --- */
+/* --- MAIN & PERSONAJE GIGANTE --- */
 main {
   text-align: center;
   flex: 1;
@@ -96,6 +93,9 @@ main {
   flex-direction: column;
   align-items: center;
   position: relative;
+  width: 100%;
+  height: 100vh; 
+  overflow: hidden;
 }
 
 /* CONTADOR DE BATALLA */
@@ -103,13 +103,13 @@ main {
   background: rgba(255, 255, 255, 0.9);
   border: var(--pk-border);
   padding: 10px 20px;
-  border-radius: 8px; /* Borde ligeramente redondeado al estilo UI Gen 3 */
-  margin-bottom: 40px;
+  border-radius: 8px;
+  margin-top: 20px;
   position: relative;
+  z-index: 20; /* Encima del personaje */
   box-shadow: var(--pk-shadow);
 }
 
-/* Triangulito decorativo de UI */
 .battle-stats::after {
   content: '';
   position: absolute;
@@ -122,13 +122,12 @@ main {
 }
 
 .floating-counter {
-  font-size: 2.5rem; /* Ajustado para la fuente pixel */
+  font-size: 2rem;
   color: var(--text-dark);
   text-shadow: 2px 2px 0px #ccc;
   line-height: 1;
 }
 
-/* ANIMACIONES DEL CONTADOR */
 .floating-counter.animating {
   animation: bounce 0.2s;
 }
@@ -137,42 +136,56 @@ main {
   50% { transform: scale(1.2); }
 }
 
-/* --- PERSONAJE (CAT) --- */
+/* PERSONAJE */
 .cat-container {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-/* Plataforma estilo batalla */
-.battle-platform {
   position: absolute;
-  bottom: 20px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 300px;
-  height: 100px;
-  background: #e0e0e0;
-  border: 4px solid #a0a0a0;
-  border-radius: 50%;
-  z-index: -1;
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+  width: 100%;
+  /* Aquí definimos que ocupe el 60% de la altura de la pantalla */
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 5;
+  pointer-events: all;
+  margin: 0;
+  padding-bottom: 50px; /* Espacio para no chocar con la barra inferior */
+  
+  /* Animación de click rápida */
+  transition: transform 0.05s;
+}
+
+.cat-container:active {
+  transform: translateX(-50%) scale(0.98);
 }
 
 .cat-images {
   position: relative;
-  width: 400px; /* Tamaño ajustado para pixel art */
-  height: 400px;
+  height: 100%;
+  width: auto;
+  /* Animación de flotación "idle" */
+  animation: idleFloat 3s infinite ease-in-out;
+}
+
+@keyframes idleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .cat-img {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;       /* Ocupa todo el alto del contenedor (60vh) */
+  width: auto;        /* Mantiene proporción */
+  max-width: 95vw;    /* No salirse en móviles */
+  object-fit: contain;
   image-rendering: pixelated;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .cat-closed { opacity: 1; }
@@ -183,18 +196,25 @@ main {
 
 .click-effect {
   position: absolute;
-  top: 0;
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.5rem;
   color: var(--pk-red);
-  text-shadow: 2px 2px 0px white;
+  text-shadow: 3px 3px 0px white, -1px -1px 0 #000;
   pointer-events: none;
   opacity: 0;
-  z-index: 20;
+  z-index: 30;
+  white-space: nowrap;
+  font-weight: bold;
 }
 
-/* --- MODAL (Estilo Dialog Box) --- */
+@keyframes floatUp {
+  0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -100px) scale(1.5); }
+}
+
+/* --- MODAL --- */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -211,8 +231,7 @@ main {
 .modal-content {
   background: var(--pk-white);
   border: var(--pk-border);
-  border-radius: 4px;
-  padding: 5px; /* Marco interno */
+  padding: 5px;
   width: 90%;
   max-width: 500px;
   box-shadow: var(--pk-shadow);
@@ -228,51 +247,31 @@ main {
   border-bottom: var(--pk-border-thin);
 }
 
-.modal-header h2 {
-  font-size: 0.9rem;
-  margin: 0;
-}
+.modal-header h2 { font-size: 0.9rem; margin: 0; }
 
 .modal-close {
-  background: red;
-  color: white;
-  border: 2px solid white;
-  width: 24px;
-  height: 24px;
+  background: red; color: white; border: 2px solid white;
+  width: 24px; height: 24px; cursor: pointer; font-size: 10px;
   font-family: inherit;
-  cursor: pointer;
-  font-size: 10px;
 }
 
 .modal-body {
-  padding: 20px;
-  font-size: 0.7rem;
-  line-height: 1.8;
+  padding: 20px; font-size: 0.7rem; line-height: 1.8;
   background-image: linear-gradient(#e0e0e0 1px, transparent 1px);
-  background-size: 100% 1.8rem; /* Líneas de cuaderno */
+  background-size: 100% 1.8rem;
 }
 
 .modal-features {
-  margin-top: 20px;
-  border: var(--pk-border-thin);
-  padding: 10px;
-  background: white;
+  margin-top: 20px; border: var(--pk-border-thin);
+  padding: 10px; background: white;
 }
 
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
+.feature-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 
-/* --- DASHBOARD MINIMIZADO (Caja de Texto Batalla) --- */
+/* --- DASHBOARD MINIMIZADO --- */
 .dashboard-minimized {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #212121; /* Fondo oscuro estilo borde de caja */
+  position: fixed; bottom: 0; left: 0; width: 100%;
+  background: #212121;
   border-top: var(--pk-border);
   padding: 5px;
   z-index: 1000;
@@ -280,71 +279,47 @@ main {
 }
 
 .dashboard-header {
-  background: white;
-  border: 2px solid white;
-  border-radius: 4px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  background: white; border: 2px solid white; border-radius: 4px;
+  padding: 10px; display: flex; align-items: center; gap: 10px;
 }
 
 .toggle-arrow {
-  color: var(--pk-red);
-  font-size: 0.8rem;
+  color: var(--pk-red); font-size: 0.8rem;
   animation: blink 1s infinite;
 }
 
-@keyframes blink {
-  50% { opacity: 0; }
-}
+@keyframes blink { 50% { opacity: 0; } }
 
 .dashboard-content {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  font-size: 0.6rem;
-  align-items: center;
+  display: flex; justify-content: space-between; width: 100%;
+  font-size: 0.6rem; align-items: center;
 }
 
 .rank-label { color: var(--pk-red); font-weight: bold; }
 .country-flag-mini { border: 2px solid black; width: 20px; }
 
-/* --- DASHBOARD EXPANDIDO (Estilo POKÉDEX) --- */
+/* --- DASHBOARD EXPANDIDO (POKÉDEX) --- */
 .dashboard-expanded {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 600px;
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 600px;
   background: var(--pk-red);
-  border: var(--pk-border);
-  border-bottom: none;
+  border: var(--pk-border); border-bottom: none;
   padding: 15px;
-  border-radius: 20px 20px 0 0; /* Forma Pokédex */
+  border-radius: 20px 20px 0 0;
   box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
   z-index: 1001;
   max-height: 80vh;
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
 }
 
-/* Luces superiores Pokédex */
 .pokedex-top {
-  display: flex;
-  gap: 10px;
-  padding-bottom: 10px;
-  border-bottom: 4px solid #8b0000;
-  margin-bottom: 10px;
+  display: flex; gap: 10px; padding-bottom: 10px;
+  border-bottom: 4px solid #8b0000; margin-bottom: 10px;
 }
 
 .blue-lens {
-  width: 40px;
-  height: 40px;
-  background: #3b4cca;
-  border: 3px solid white;
-  border-radius: 50%;
+  width: 40px; height: 40px; background: #3b4cca;
+  border: 3px solid white; border-radius: 50%;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
 
@@ -355,107 +330,65 @@ main {
 .light.green { background: #00ff00; }
 
 .dashboard-expanded .dashboard-header {
-  background: transparent;
-  border: none;
-  color: white;
-  text-shadow: 2px 2px 0px black;
-  margin-bottom: 10px;
+  background: transparent; border: none; color: white;
+  text-shadow: 2px 2px 0px black; margin-bottom: 10px;
 }
 
 .leaderboard-full {
-  background: #212121;
-  padding: 10px;
-  border-radius: 5px;
-  border: var(--pk-border);
+  background: #212121; padding: 10px;
+  border-radius: 5px; border: var(--pk-border);
 }
 
 .screen-container {
-  background: #b0b0b0; /* Marco de la pantalla */
-  padding: 15px;
-  border-radius: 0 0 0 30px; /* Corte esquina Pokédex */
+  background: #b0b0b0; padding: 15px; border-radius: 0 0 0 30px;
 }
 
 .leaderboard-body-full {
-  background: var(--pk-screen); /* Pantalla verde retro */
+  background: var(--pk-screen);
   border: inset 3px #555;
-  height: 300px;
-  overflow-y: auto;
+  height: 300px; overflow-y: auto;
   font-family: 'Press Start 2P', cursive;
-  color: #0f380f; /* Color texto Gameboy */
-}
-
-/* Encabezados de tabla */
-.leaderboard-header-full {
-  display: grid;
-  grid-template-columns: 50px 1fr 80px;
-  font-size: 0.6rem;
-  padding: 5px;
-  border-bottom: 2px dashed #0f380f;
-  margin-bottom: 5px;
   color: #0f380f;
 }
 
-/* Items de la lista */
+.leaderboard-header-full {
+  display: grid; grid-template-columns: 50px 1fr 80px;
+  font-size: 0.6rem; padding: 5px;
+  border-bottom: 2px dashed #0f380f; margin-bottom: 5px;
+  color: #0f380f;
+}
+
 .leaderboard-item {
-  display: grid;
-  grid-template-columns: 50px 1fr 80px;
-  padding: 8px 5px;
-  font-size: 0.6rem;
-  align-items: center;
+  display: grid; grid-template-columns: 50px 1fr 80px;
+  padding: 8px 5px; font-size: 0.6rem; align-items: center;
   border-bottom: 1px solid rgba(15, 56, 15, 0.2);
 }
 
 .leaderboard-item:hover {
-  background-color: rgba(15, 56, 15, 0.1);
-  cursor: pointer;
+  background-color: rgba(15, 56, 15, 0.1); cursor: pointer;
 }
 
 .leaderboard-item:before {
-  content: '►';
-  opacity: 0;
-  position: absolute;
-  left: 5px;
+  content: '►'; opacity: 0; position: absolute; left: 5px;
 }
+.leaderboard-item:hover:before { opacity: 1; }
 
-.leaderboard-item:hover:before {
-  opacity: 1;
-}
-
-/* Scrollbar estilo Retro */
-.leaderboard-body-full::-webkit-scrollbar {
-  width: 10px;
-  background: #0f380f;
-}
-.leaderboard-body-full::-webkit-scrollbar-thumb {
-  background: #8bac0f;
-  border: 1px solid #0f380f;
-}
-
-/* Medallas personalizadas */
-.medal-icon { filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5)); }
+.leaderboard-body-full::-webkit-scrollbar { width: 10px; background: #0f380f; }
+.leaderboard-body-full::-webkit-scrollbar-thumb { background: #8bac0f; border: 1px solid #0f380f; }
 
 /* RESPONSIVE */
 @media (max-width: 600px) {
   .logo { max-width: 220px; }
-  .floating-counter { font-size: 1.8rem; }
+  .floating-counter { font-size: 1.5rem; }
   
-  .cat-images { width: 300px; height: 300px; }
-  .battle-platform { width: 220px; height: 70px; }
-  
-  .dashboard-expanded {
-    width: 100%;
-    border-radius: 0;
-    height: 60vh;
-  }
-  
+  .cat-container { height: 55vh; padding-bottom: 60px; }
+  .battle-stats { margin-top: 10px; padding: 5px 15px; }
+
+  .dashboard-expanded { width: 100%; border-radius: 0; height: 60vh; }
   .leaderboard-item { font-size: 0.5rem; }
   
   .about-btn {
-    top: auto;
-    bottom: 80px;
-    right: 20px;
-    font-size: 0.6rem;
-    z-index: 900;
-    position: fixed;
+    top: auto; bottom: 80px; right: 20px;
+    font-size: 0.6rem; z-index: 900; position: fixed;
   }
 }
