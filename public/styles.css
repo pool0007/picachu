@@ -22,12 +22,16 @@
 
 body {
   font-family: 'Press Start 2P', cursive; /* Fuente Pixel Art */
-  background-color: #71c080;
-  /* Patrón de mapa clásico */
+  
+  /* CAMBIO: Fondo Amarillo estilo Pikachu */
+  background-color: #f8d030; 
+  
+  /* Patrón de mapa clásico (líneas un poco más visibles) */
   background-image: 
-    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
   background-size: 20px 20px;
+  
   min-height: 100vh;
   color: var(--text-dark);
   overflow: hidden;
@@ -140,19 +144,23 @@ main {
 .cat-container {
   position: absolute;
   bottom: 0;
-  left: 0;           /* CAMBIO: Empieza desde la izquierda */
-  width: 100%;       /* Ocupa todo el ancho */
-  height: 60vh;
+  left: 0;
+  width: 100%;
+  
+  /* CAMBIO: Aumentado de 60vh a 75vh (Más grande) */
+  height: 75vh; 
+  
   display: flex;
   justify-content: center;
   align-items: flex-end;
   z-index: 5;
   pointer-events: all;
   margin: 0;
-  padding-bottom: 50px;
   
-  /* Eliminamos el 'transform: translateX' de aquí porque ya ocupa el 100% */
-  transform-origin: bottom center; /* Para que el zoom sea desde abajo */
+  /* Un poco más de espacio abajo para que no lo tape la barra negra */
+  padding-bottom: 60px; 
+  
+  transform-origin: bottom center;
   transition: transform 0.05s;
 }
 
