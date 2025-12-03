@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug PopCat - Test Database</title>
+    <style>
+        body { 
+            font-family: 'Poppins', Arial, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        button {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #d97706;
+        }
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+            word-break: break-all;
+        }
+        .success { 
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .error { 
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .url {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Debug PopCat - Database Test</h1>
+        <p>Base URL: <span class="url" id="baseUrl"></span></p>
+        
+        <div>
+            <button onclick="testFunction()">Test Basic Function</button>
+            <button onclick="testAPI()">Test API Health</button>
+            <button onclick="testDB()">Test Database Connection</button>
+            <button onclick="testClick()">Test Click (TestCountry)</button>
+            <button onclick="testLeaderboard()">Test Leaderboard</button>
+            <button onclick="clearLogs()">Clear Logs</button>
+        </div>
+        
+        <div id="logs"></div>
+    </div>
+
+    <script>
+        const baseURL = window.location.origin + '/api';
+        document.getElementById('baseUrl').textContent = baseURL;
+        const logs = document.getElementById('logs');
+
+        function log(message, type = '') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        async function testFunction() {
+            try {
+                log('Testing basic function endpoint...');
+                const response = await fetch(`${baseURL}/test`);
+                const text = await response.text();
+                log(`📥 Raw response: <pre>${text}</pre>`);
+                
+                try {
+                    const data = JSON.parse(text);
+                    log(`✅ Basic Function: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'success');
+                } catch (e) {
+                    log(`❌ Not JSON - Received HTML? First 200 chars: ${text.substring(0, 200)}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Function test error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAPI() {
+            try {
+                log('Testing API health endpoint...');
+                const response = await fetch(`${baseURL}/health`);
+                const text = await response.text();
+                log(`📥 Raw response: <pre>${text}</pre>`);
+                
+                try {
+                    const data = JSON.parse(text);
+                    log(`✅ Health Check: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'success');
+                } catch (e) {
+                    log(`❌ Not JSON - Received HTML? First 200 chars: ${text.substring(0, 200)}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Health error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testDB() {
+            try {
+                log('Testing database connection...');
+                const response = await fetch(`${baseURL}/test-db`);
+                const text = await response.text();
+                log(`📥 Raw response: <pre>${text}</pre>`);
+                
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        log(`✅ Database Connection: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'success');
+                    } else {
+                        log(`❌ Database error: ${data.error}`, 'error');
+                    }
+                } catch (e) {
+                    log(`❌ Not JSON - Received HTML? First 200 chars: ${text.substring(0, 200)}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Database test error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testClick() {
+            try {
+                log('Testing click endpoint with TestCountry...');
+                const response = await fetch(`${baseURL}/click`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ country: 'TestCountry' })
+                });
+                
+                const text = await response.text();
+                log(`📥 Raw response: <pre>${text}</pre>`);
+                
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        log(`✅ Click Test: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'success');
+                    } else {
+                        log(`❌ Click error: ${data.error}`, 'error');
+                    }
+                } catch (e) {
+                    log(`❌ Not JSON - Received HTML? First 200 chars: ${text.substring(0, 200)}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Click test error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testLeaderboard() {
+            try {
+                log('Testing leaderboard endpoint...');
+                const response = await fetch(`${baseURL}/leaderboard`);
+                const text = await response.text();
+                log(`📥 Raw response: <pre>${text}</pre>`);
+                
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        log(`✅ Leaderboard: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'success');
+                    } else {
+                        log(`❌ Leaderboard error: ${data.error}`, 'error');
+                    }
+                } catch (e) {
+                    log(`❌ Not JSON - Received HTML? First 200 chars: ${text.substring(0, 200)}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Leaderboard error: ${error.message}`, 'error');
+            }
+        }
+
+        function clearLogs() {
+            logs.innerHTML = '';
+        }
+
+        // Test automático al cargar
+        setTimeout(() => {
+            testFunction();
+        }, 1000);
+    </script>
+</body>
+</html>
