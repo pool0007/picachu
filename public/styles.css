@@ -59,10 +59,16 @@ header {
 }
 
 .logo {
-  max-width: 280px;
+   /* CAMBIO: De 280px a 550px (puedes poner 600px o más si quieres) */
+  max-width: 550px; 
+  
   height: auto;
   margin: 0 auto;
   display: block;
+  filter: drop-shadow(4px 4px 0 #000); 
+  
+  /* Opcional: añade esto para que no se vea borroso al estirarse */
+  width: 100%; 
   filter: drop-shadow(4px 4px 0 #000); 
 }
 
